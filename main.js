@@ -103,7 +103,7 @@ healthcheck(callback) {
     */
    if (error) {
        this.emitOffline();
-       log.error= error;
+       log.error(error);
      /**
       * Write this block.
       * If an error was returned, we need to emit OFFLINE.
@@ -129,7 +129,7 @@ healthcheck(callback) {
       
       */
       this.emitOnline();
-      log.info="Instance Available";
+      log.info('Instance Available');
    }
  });
 }
