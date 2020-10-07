@@ -239,7 +239,7 @@ healthcheck(callback) {
      */
     let callbackData = null;
 	      let callbackError = null;
-	      this.connector.post(this.connector.options, (data, error) => {
+	      this.connector.post((data, error) => {
 	      if (error) {
 	      console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
 	      callbackError = error;

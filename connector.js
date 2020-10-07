@@ -58,10 +58,10 @@ class ServiceNowConnector {
    * @param {error} callback.error - The error property of callback.
    */
   get(callback) {
-    let getCallOptions = { ...this.options };
-    getCallOptions.method = 'GET';
-    getCallOptions.query = 'sysparm_limit=1';
-    this.sendRequest(getCallOptions, (results, error) => callback(results, error));
+     let getCallOptions = this.options;
+        getCallOptions.method = 'GET';
+        getCallOptions.query = 'sysparm_limit=1';
+        this.sendRequest(getCallOptions, (results, error) => callback(results, error));
   }
 
   /**
@@ -195,9 +195,11 @@ class ServiceNowConnector {
  */
  post( callback) {
  
-   let postCallOptions = { ...this.options };
-    postCallOptions.method = 'POST';
-  this.sendRequest(postCallOptions, (results, error) => callback(results, error));
+   let postCallOptions = this.options;
+    
+        postCallOptions.method = 'POST';
+        console.log(postCallOptions);
+        this.sendRequest(postCallOptions, (results, error) => callback(results, error));
 }
 
 }
