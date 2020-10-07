@@ -1,6 +1,7 @@
 const request = require('request');
 
 const validResponseRegex = /(2\d\d)/;
+const changeRequest = require('./json-schema/changeRequest');
 
 
 /**
@@ -132,7 +133,32 @@ class ServiceNowConnector {
       callbackError = 'Service Now instance is hibernating';
       console.error(callbackError);
     } else {
-      callbackData = response;
+         if(response.body){
+            let callbackData = JSON.parse(response.body);
+ 
+            callbackData = callbackData.result;
+             log.info(callbackData);
+            log.info(callbackData.length);
+            callbackData =callbackData.map((item)=>
+            {
+                 log.info(item);
+
+                 return 
+           `{
+  "change_ticket_number":${item.number},
+  "active": ${item.knowledge},
+  "priority": ${item.priority},
+  "description": ${item.description},
+  "work_start": ${item.work_start},
+  "work_end": ${item.work_end},
+  "change_ticket_key": ${item.sys_id}
+}`
+
+            });
+            
+         }
+    //  else
+    //   callbackData = 'No ;
     }
     return callback(callbackData, callbackError);
 }
