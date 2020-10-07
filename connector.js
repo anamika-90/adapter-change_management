@@ -121,46 +121,21 @@ class ServiceNowConnector {
    * it must call function isHibernating.
    */
      let callbackData = null;
-  let callbackError = null;
-   if (error) {
-      console.error('Error present.');
-      callbackError = error;
-    } else if (!validResponseRegex.test(response.statusCode)) {
-      console.error('Bad response code.');
-      callbackError = response;
-    } else if (this.isHibernating(response)) {
-        
-      callbackError = 'Service Now instance is hibernating';
-      console.error(callbackError);
-    } else {
-         if(response.body){
-            let callbackData = JSON.parse(response.body);
- 
-            callbackData = callbackData.result;
-             log.info(callbackData);
-            log.info(callbackData.length);
-            callbackData =callbackData.map((item)=>
-            {
-                 log.info(item);
+        let callbackError = null;
 
-                 return 
-           `{
-  "change_ticket_number":${item.number},
-  "active": ${item.knowledge},
-  "priority": ${item.priority},
-  "description": ${item.description},
-  "work_start": ${item.work_start},
-  "work_end": ${item.work_end},
-  "change_ticket_key": ${item.sys_id}
-}`
-
-            });
-            
-         }
-    //  else
-    //   callbackData = 'No ;
-    }
-    return callback(callbackData, callbackError);
+        if (error) {
+            console.error('Error present.');
+            callbackError = error;
+        } else if (!validResponseRegex.test(response.statusCode)) {
+            console.error('Bad response code.');
+            callbackError = response;
+        } else if (this.isHibernating(response)) {
+            callbackError = 'Service Now instance is hibernating';
+            console.error(callbackError);
+        } else {
+            callbackData = response;
+        }
+        return callback(callbackData, callbackError);
 }
 
 /**

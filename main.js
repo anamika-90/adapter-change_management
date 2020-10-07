@@ -94,6 +94,8 @@ class ServiceNowAdapter extends EventEmitter {
  *   that handles the response.
  */
 healthcheck(callback) {
+     let callbackData = null;
+	    let callbackError = null;
  this.getRecord((result, error) => {
    /**
     * For this lab, complete the if else conditional
@@ -103,7 +105,9 @@ healthcheck(callback) {
     */
    if (error) {
        this.emitOffline();
-       log.error(error);
+      log.info('Service now adapter is offline {this.id}');
+	      
+	      callbackError = error;
      /**
       * Write this block.
       * If an error was returned, we need to emit OFFLINE.
@@ -129,7 +133,8 @@ healthcheck(callback) {
       
       */
       this.emitOnline();
-      log.info('Instance Available');
+    callbackData = result;
+	      log.info('Service now adapter is online');
    }
  });
 }
@@ -189,7 +194,30 @@ healthcheck(callback) {
      
      */
 
-     this.connector.get(callback);
+   let callbackData = null;
+	      let callbackError = null;
+	      this.connector.get((data, error) => {
+	      if (error) {
+	      callbackError = error;
+	      console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+	      } else { 
+	    let bodyObj = JSON.parse(data.body); 
+	       let resultArry = bodyObj.result;
+	      let arr = [];
+	      for (let resultObj in resultArry) { 
+	       arr.push ({"change_ticket_number" : resultArry[resultObj].number}); 
+	       arr.push ({"active" : resultArry[resultObj].active}); 
+	       arr.push ({"priority" : resultArry[resultObj].priority}); 
+	       arr.push ({"description" : resultArry[resultObj].description}); 
+	       arr.push ({"work_start" : resultArry[resultObj].work_start}); 
+	       arr.push ({"work_end" : resultArry[resultObj].work_end}); 
+	       arr.push ({"change_ticket_key" : resultArry[resultObj].sys_id}); 
+	       callbackData = arr;
+	      console.log(`\nResponse returned from GET request:\n${JSON.stringify(callbackData)}`);
+	      }
+	      } 
+	       return callback(callbackData, callbackError);
+	      });
  
   }
 
@@ -209,9 +237,29 @@ healthcheck(callback) {
      * Note how the object was instantiated in the constructor().
      * post() takes a callback function.
      */
-     this.connector.post(callback);
- 
-  }
+    let callbackData = null;
+	      let callbackError = null;
+	      this.connector.post(this.connector.options, (data, error) => {
+	      if (error) {
+	      console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+	      callbackError = error;
+	      } else {  
+	    var body = JSON.parse(data.body); 
+	       let result = body.result; 
+	       var arr = [];
+	      arr.push ({"change_ticket_number" : result.number}); 
+	       arr.push ({"active" : result.active}); 
+	       arr.push ({"priority" : result.priority}); 
+	       arr.push ({"description" : result.description}); 
+	       arr.push ({"work_start" : result.work_start}); 
+	       arr.push ({"work_end" : result.work_end}); 
+	       arr.push ({"change_ticket_key" : result.sys_id}); 
+	       callbackData = Object.assign({}, arr);
+	      console.log(`\nResponse returned from POST request:\n${JSON.stringify(callbackData)}`);
+	      } 
+	       return callback(callbackData,callbackError);
+	      });
+	      }
 }
 
 module.exports = ServiceNowAdapter;
