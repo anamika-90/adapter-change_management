@@ -203,18 +203,22 @@ healthcheck(callback) {
 	      } else { 
 	    let bodyObj = JSON.parse(data.body); 
 	       let resultArry = bodyObj.result;
-	      let arr = [];
+           
+	      let result = [];
 	      for (let resultObj in resultArry) { 
-	       arr.push ({"change_ticket_number" : resultArry[resultObj].number}); 
-	       arr.push ({"active" : resultArry[resultObj].active}); 
-	       arr.push ({"priority" : resultArry[resultObj].priority}); 
-	       arr.push ({"description" : resultArry[resultObj].description}); 
-	       arr.push ({"work_start" : resultArry[resultObj].work_start}); 
-	       arr.push ({"work_end" : resultArry[resultObj].work_end}); 
-	       arr.push ({"change_ticket_key" : resultArry[resultObj].sys_id}); 
-	       callbackData = arr;
-	      console.log(`\nResponse returned from GET request:\n${JSON.stringify(callbackData)}`);
+             
+	       result.push ({"change_ticket_number" : resultArry[resultObj].number,
+	   "active" : resultArry[resultObj].active, 
+	       "priority" : resultArry[resultObj].priority,
+	       "description" : resultArry[resultObj].description,
+	       "work_start" : resultArry[resultObj].work_start,
+	      "work_end" : resultArry[resultObj].work_end,
+	      "change_ticket_key" : resultArry[resultObj].sys_id}); 
+	      
+	      
 	      }
+          callbackData = result;
+          console.log(`\nResponse returned from GET request:\n${JSON.stringify(callbackData)}`);
 	      } 
 	       return callback(callbackData, callbackError);
 	      });
@@ -239,6 +243,7 @@ healthcheck(callback) {
      */
     let callbackData = null;
 	      let callbackError = null;
+          console.log('Post Called....')
 	      this.connector.post((data, error) => {
 	      if (error) {
 	      console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
@@ -246,15 +251,15 @@ healthcheck(callback) {
 	      } else {  
 	    var body = JSON.parse(data.body); 
 	       let result = body.result; 
-	       var arr = [];
-	      arr.push ({"change_ticket_number" : result.number}); 
-	       arr.push ({"active" : result.active}); 
-	       arr.push ({"priority" : result.priority}); 
-	       arr.push ({"description" : result.description}); 
-	       arr.push ({"work_start" : result.work_start}); 
-	       arr.push ({"work_end" : result.work_end}); 
-	       arr.push ({"change_ticket_key" : result.sys_id}); 
-	       callbackData = Object.assign({}, arr);
+	       var arr = {};
+	      arr={"change_ticket_number" : result.number, 
+	       "active" : result.active, 
+	      "priority" : result.priority,
+	      "description" : result.description,
+	       "work_start" : result.work_start,
+	       "work_end" : result.work_end,
+	      "change_ticket_key" : result.sys_id};
+	       callbackData = arr; //Object.assign({}, arr);
 	      console.log(`\nResponse returned from POST request:\n${JSON.stringify(callbackData)}`);
 	      } 
 	       return callback(callbackData,callbackError);
